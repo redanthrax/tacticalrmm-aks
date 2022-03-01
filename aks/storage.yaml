@@ -1,0 +1,27 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: static-disk
+  namespace: tacticalrmm
+provisioner: kubernetes.io/azure-disk
+volumeBindingMode: Immediate
+allowVolumeExpansion: true
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: storage
+spec:
+  capacity:
+    storage: 100Gi
+  storageClassName: static-disk
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  accessModes:
+    - ReadWriteMany
+  azureDisk:
+    kind: Managed
+    diskName: clusterdisk
+    diskURI: /subscriptions/9f422d60-3e3d-42d2-83eb-593d59002ab4/resourceGroups/trmm/providers/Microsoft.Compute/disks/clusterdisk
