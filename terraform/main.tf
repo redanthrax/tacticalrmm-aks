@@ -88,3 +88,13 @@ resource "azurerm_managed_disk" "disk" {
   create_option = "Empty"
   disk_size_gb = "100"
 }
+
+data "azurerm_client_config" "current" {}
+
+resource "azurerm_key_vault" "vault" {
+  name = "${var.resource_group_name}-vault"
+  location = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+  sku_name = "standard"
+  tenant_id = data.azurerm_client_config.current.tenant_id
+}

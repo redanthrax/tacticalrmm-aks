@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tactical-init
+  namespace: tacticalrmm
+  labels:
+    app: trmm
+spec:
+  containers:
+    - name: tactical-init
+      image: trmmcontainer.azurecr.io/tactical
+      args: ["tactical-init"]
+      env:
+        - name: TACTICAL_DIR
+          value: /opt/tactical
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: trmm-secrets
+              key: postgres-user
