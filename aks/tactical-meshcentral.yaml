@@ -1,0 +1,102 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: meshdata
+  namespace: tacticalrmm
+  labels:
+    app: trmm
+spec:
+  storageClassName: static-disk
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: tactical-meshcentral
+  namespace: tacticalrmm
+  labels:
+    app: tactical-meshcentral
+spec:
+  selector:
+    app: tactical-meshcentral
+  ports:
+    - port: 443
+      name: "meshcentralport"
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tactical-meshcentral
+  namespace: tacticalrmm
+  labels:
+    app: trmm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tactical-meshcentral
+  template:
+    metadata:
+      labels:
+        app: tactical-meshcentral
+    spec:
+      containers:
+        - name: tactical-meshcentral
+          image: trmmcontainer.azurecr.io/tactical-meshcentral:latest
+          ports:
+            - containerPort: 443
+              name: tcp
+          env:
+            - name: MESH_HOST
+              value: "mesh.mycompany.com"
+            - name: MESH_USER
+              valueFrom:
+                secretKeyRef:
+                  name: meshuser
+                  key: meshuserkey
+            - name: MESH_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: meshpass
+                  key: meshpasskey
+            - name: MONGODB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mongouser
+                  key: mongouserkey
+            - name: MONGODB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongopass
+                  key: mongopasskey
+            - name: MESH_PERSISTENT_CONFIG
+              value: "0"
+          volumeMounts:
+            - name: shared
+              mountPath: /opt/tactical
+            - name: meshdata
+              mountPath: /home/node/app/meshcentral-data
+            - name: trmm-secretstore-inline
+              mountPath: /mnt/secrets-store
+              readOnly: true
+      volumes:
+        - name: meshdata
+          persistentVolumeClaim:
+            claimName: meshdata
+        - name: shared
+          persistentVolumeClaim:
+            claimName: shared
+        - name: trmm-secretstore-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "trmm-secretstore"

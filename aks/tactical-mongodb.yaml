@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongodbdata
+spec:
+  storageClassName: static-disk
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: tactical-mongodb
+  namespace: tacticalrmm
+  labels:
+    app: trmm
+spec:
+  selector:
+    app: tactical-mongodb
+  ports:
+    - port: 27017
+      name: "mongodbport"
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tactical-mongodb
+  namespace: tacticalrmm
+  labels:
+    app: tactical-mongodb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tactical-mongodb
+  template:
+    metadata:
+      labels:
+        app: tactical-mongodb
+    spec:
+      containers:
+        - name: tactical-mongodb
+          image: mongo:4.4
+          ports:
+            - containerPort: 27017
+              name: tcp
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              value: "mongouser"
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              value: "6Ve1Pz2J3v5F"
+            - name: MONGO_INITDB_DATABASE
+              value: "meshcentral"
+          volumeMounts:
+            - name: storage
+              mountPath: /data/db
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: mongodbdata

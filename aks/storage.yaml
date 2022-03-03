@@ -3,6 +3,8 @@ kind: StorageClass
 metadata:
   name: static-disk
   namespace: tacticalrmm
+  labels:
+    app: trmm
 provisioner: kubernetes.io/azure-disk
 volumeBindingMode: Immediate
 allowVolumeExpansion: true
@@ -24,4 +26,4 @@ spec:
   azureDisk:
     kind: Managed
     diskName: clusterdisk
-    diskURI: /subscriptions/9f422d60-3e3d-42d2-83eb-593d59002ab4/resourceGroups/trmm/providers/Microsoft.Compute/disks/clusterdisk
+    diskURI: /subscriptions/9f422d60-3e3d-42d2-83eb-593d59002ab4/resourceGroups/trmm-resources/providers/Microsoft.Compute/disks/clusterdisk

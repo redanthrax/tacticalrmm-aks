@@ -41,7 +41,7 @@ resource "azurerm_public_ip" "pip" {
 }
 
 resource "azurerm_kubernetes_cluster" "cluster" {
-  dns_prefix = var.dns_prefix
+  dns_prefix = "${var.dns_prefix}-${random_string.random.result}"
   location = var.location
   kubernetes_version = var.kubernetes_version
   name = "${var.resource_group_name}-cluster"
@@ -50,7 +50,7 @@ resource "azurerm_kubernetes_cluster" "cluster" {
     name = "defaultpool"
     vm_size = var.machinesize
     node_count = 2
-    availability_zones = ["1", "2"]
+    availability_zones = ["1"]
     vnet_subnet_id = azurerm_subnet.subnet.id
   }
 
@@ -83,10 +83,11 @@ resource "azurerm_role_assignment" "assignment" {
 resource "azurerm_managed_disk" "disk" {
   name = "clusterdisk"
   location = var.location
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = azurerm_kubernetes_cluster.cluster.node_resource_group
   storage_account_type = "Premium_LRS"
   create_option = "Empty"
   disk_size_gb = "100"
+  zones = ["1"]
 }
 
 data "azurerm_client_config" "current" {}
@@ -97,4 +98,24 @@ resource "azurerm_key_vault" "vault" {
   resource_group_name = azurerm_resource_group.rg.name
   sku_name = "standard"
   tenant_id = data.azurerm_client_config.current.tenant_id
+
+  access_policy {
+    tenant_id = data.azurerm_client_config.current.tenant_id
+    object_id = data.azurerm_client_config.current.object_id
+
+    key_permissions = [
+      "Get",
+    ]
+
+    secret_permissions = [
+      "Get",
+      "Delete",
+      "List",
+      "Set",
+    ]
+
+    storage_permissions = [
+      "Get",
+    ]
+  }
 }

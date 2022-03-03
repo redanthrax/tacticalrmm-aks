@@ -1,0 +1,91 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgresqldata
+  namespace: tacticalrmm
+  labels:
+    app: trmm
+spec:
+  storageClassName: static-disk
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: tactical-postgres
+  namespace: tacticalrmm
+  labels:
+    app: trmm
+spec:
+  selector:
+    app: tactical-postgres
+  ports:
+    - port: 5432
+      name: "postgresport"
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tactical-postgres
+  namespace: tacticalrmm
+  labels:
+    app: tactical-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tactical-postgres
+  template:
+    metadata:
+      labels:
+        app: tactical-postgres
+    spec:
+      containers:
+        - name: tactical-postgres
+          image: postgres:13-alpine
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "1000m"
+          env:
+            - name: POSTGRES_DB
+              value: tacticalrmm
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgresuser
+                  key: postgresuserkey
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgrespass
+                  key: postgrespasskey
+            - name: PGDATA
+              value: /var/lib/postgresql/data/db-files/
+          ports:
+            - containerPort: 5432
+              name: tcp
+          volumeMounts:
+            - name: storage
+              mountPath: /var/lib/postgresql/data
+            - name: trmm-secretstore-inline
+              mountPath: /mnt/secrets-store
+              readOnly: true
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: postgresqldata
+        - name: trmm-secretstore-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "trmm-secretstore"

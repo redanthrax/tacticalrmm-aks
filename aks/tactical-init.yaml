@@ -16,5 +16,48 @@ spec:
         - name: POSTGRES_USER
           valueFrom:
             secretKeyRef:
-              name: trmm-secrets
-              key: postgres-user
+              name: postgresuser
+              key: postgresuserkey
+        - name: POSTGRES_PASS
+          valueFrom:
+            secretKeyRef:
+              name: postgrespass
+              key: postgrespasskey
+        - name: APP_HOST
+          value: "rmm.mycompany.com"
+        - name: API_HOST
+          value: "api.mycompany.com"
+        - name: MESH_USER
+          valueFrom:
+            secretKeyRef:
+              name: meshuser
+              key: meshuserkey
+        - name: MESH_HOST
+          value: "mesh.mycompany.com"
+        - name: TRMM_USER
+          valueFrom:
+            secretKeyRef:
+              name: trmmuser
+              key: trmmuserkey
+        - name: TRMM_PASS
+          valueFrom:
+            secretKeyRef:
+              name: trmmpass
+              key: trmmpasskey
+      volumeMounts:
+        - name: storage
+          mountPath: /opt/tactical
+        - name: trmm-secretstore-inline
+          mountPath: /mnt/secrets-store
+          readOnly: true
+  restartPolicy: OnFailure
+  volumes:
+    - name: storage
+      persistentVolumeClaim:
+        claimName: shared
+    - name: trmm-secretstore-inline
+      csi:
+        driver: secrets-store.csi.k8s.io
+        readOnly: true
+        volumeAttributes:
+          secretProviderClass: "trmm-secretstore"
