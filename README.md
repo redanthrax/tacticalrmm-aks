@@ -76,7 +76,9 @@ docker push trmmcontainer.azurecr.io/tactical-frontend
 
 ## login to aks cluster
 
+```
 az aks get-credentials --resource-group trmm --name trmm-cluster
+```
 
 ## setup keyvault secrets auth
 
