@@ -80,18 +80,18 @@ spec:
             - name: MESH_PERSISTENT_CONFIG
               value: "0"
           volumeMounts:
-            - name: shared
-              mountPath: /opt/tactical
             - name: meshdata
               mountPath: /home/node/app/meshcentral-data
             - name: trmm-secretstore-inline
               mountPath: /mnt/secrets-store
               readOnly: true
+            - name: storage
+              mountPath: /opt/tactical
       volumes:
         - name: meshdata
           persistentVolumeClaim:
             claimName: meshdata
-        - name: shared
+        - name: storage
           persistentVolumeClaim:
             claimName: shared
         - name: trmm-secretstore-inline

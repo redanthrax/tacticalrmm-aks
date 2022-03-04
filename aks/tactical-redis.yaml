@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redisdata
+  namespace: tacticalrmm
+  labels:
+    app: trmm
+spec:
+  storageClassName: static-disk
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: tactical-redis
+  namespace: tacticalrmm
+  labels:
+    app: trmm
+spec:
+  selector:
+    app: tactical-redis
+  ports:
+    - port: 6379
+      name: "redisport"
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tactical-redis
+  namespace: tacticalrmm
+  labels:
+    app: tactical-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tactical-redis
+  template:
+    metadata:
+      labels:
+        app: tactical-redis
+    spec:
+      containers:
+        - name: tactical-redis
+          image: redis:6.0-alpine
+          command: ["redis-server"]
+          args: ["--appendonly", "yes"]
+          ports:
+            - containerPort: 6379
+              name: tcp
+          volumeMounts:
+            - name: storage
+              mountPath: /data
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: redisdata

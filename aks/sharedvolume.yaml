@@ -6,9 +6,11 @@ metadata:
   labels:
     app: trmm
 spec:
-  storageClassName: static-disk
-  accessModes:
-    - ReadWriteMany
   resources:
     requests:
       storage: 50Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  volumeName: storage
+  storageClassName: static-disk

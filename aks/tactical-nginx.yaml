@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tactical-nginx
+  namespace: tacticalrmm
+  labels:
+    app: trmm
+spec:
+  selector:
+    app: tactical-nginx
+  ports:
+    - port: 443
+      name: "nginxport"
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tactical-nginx
+  namespace: tacticalrmm
+  labels:
+    app: tactical-nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      lbtype: external
+  template:
+    metadata:
+      labels:
+        app: tactical-nginx
+        lbtype: external
+    spec:
+      containers:
+        - name: tactical-nginx
+          image: trmmcontainer.azurecr.io/tactical-nginx:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              name: "80-nginx"
+            - containerPort: 443
+              name: "443-nginx"
+          env:
+            - name: APP_HOST
+              value: "rmm.mycompany.com"
+            - name: API_HOST
+              value: "api.mycompany.com"
+            - name: MESH_HOST
+              value: "mesh.mycompany.com"
+            - name: NGINX_RESOLVER
+              value: "kube-dns.kube-system.svc.cluster.local"
+            - name: BACKEND_SERVICE
+              value: tactical-backend.tacticalrmm.svc.cluster.local
+            - name: FRONTEND_SERVICE
+              value: tactical-frontend.tacticalrmm.svc.cluster.local
+            - name: MESH_SERVICE
+              value: tactical-meshcentral.tacticalrmm.svc.cluster.local
+            - name: WEBSOCKETS_SERVICE
+              value: tactical-websockets.tacticalrmm.svc.cluster.local
+            - name: CERT_PUB_KEY
+              value: ""
+            - name: CERT_PRIV_KEY
+              value: ""
+          volumeMounts:
+            - name: storage
+              mountPath: /opt/tactical
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: shared

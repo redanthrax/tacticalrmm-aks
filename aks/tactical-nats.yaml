@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tactical-nats
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-resource-group: TacticalRMM
+    service.beta.kubernetes.io/azure-dns-label-name: tacticalrmm
+  namespace: tacticalrmm
+  labels:
+    app: trmm
+spec:
+  selector:
+    app: tactical-nats
+  ports:
+    - port: 4222
+      name: "natsport"
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tactical-nats
+  namespace: tacticalrmm
+  labels:
+    app: tactical-nats
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tactical-nats
+      lbtype: external
+  template:
+    metadata:
+      labels:
+        app: tactical-nats
+        lbtype: external
+    spec:
+      containers:
+        - name: tactical-nats
+          image: trmmcontainer.azurecr.io/tactical-nats:latest
+          ports:
+            - containerPort: 4222
+              name: "4222-nats"
+          env:
+            - name: TACTIAL_DIR
+              value: "/opt/tactical"
+            - name: API_HOST
+              value: "api.mycompany.com"
+          volumeMounts:
+            - name: storage
+              mountPath: /opt/tactical
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: shared

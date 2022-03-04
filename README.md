@@ -138,4 +138,14 @@ kubectl apply -f tactical-init.yaml
 
 kubectl apply -f tactical-postgres.yaml
 
-kubectl apply -f tactical-meshcentral.com
+kubectl apply -f tactical-meshcentral.yaml
+
+kubectl apply -f tactical-nginx.yaml
+
+## assign public ip
+
+ az aks show -g trmm -n trmm-cluster --query "identity"
+
+ use princiaplid
+
+az role assignment create --assignee 2daedb67-c648-422a-bd4e-b06ebc63c209 --role "Network Contributor" --scope /subscriptions/9f422d60-3e3d-42d2-83eb-593d59002ab4/resourceGroups/trmm

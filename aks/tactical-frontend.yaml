@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tactical-frontend
+  namespace: tacticalrmm
+  labels:
+    app: trmm
+spec:
+  selector:
+    app: tactical-frontend
+  ports:
+    - port: 80
+      name: "frontendport"
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tactical-frontend
+  namespace: tacticalrmm
+  labels:
+    app: tactical-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tactical-frontend
+  template:
+    metadata:
+      labels:
+        app: tactical-frontend
+    spec:
+      containers:
+        - name: tactical-frontend
+          image: trmmcontainer.azurecr.io/tactical-frontend:latest
+          ports:
+            - containerPort: 80
+              name: http
+          env:
+            - name: API_HOST
+              value: "api.mycompany.com"

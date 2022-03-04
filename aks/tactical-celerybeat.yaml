@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tactical-celerybeat
+  namespace: tacticalrmm
+  labels:
+    app: tactical-celerybeat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tactical-celerybeat
+  template:
+    metadata:
+      labels:
+        app: tactical-celerybeat
+    spec:
+      containers:
+        - name: tactical-celerybeat
+          args: ["tactical-celerybeat"]
+          image: trmmcontainer.azurecr.io/tactical:latest
+          volumeMounts:
+            - name: storage
+              mountPath: /opt/tactical
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: shared

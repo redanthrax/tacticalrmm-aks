@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tactical-websockets
+  namespace: tacticalrmm
+  labels:
+    app: trmm
+spec:
+  selector:
+    app: tactical-websockets
+  ports:
+    - port: 8383
+      name: "websocketsport"
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tactical-websockets
+  namespace: tacticalrmm
+  labels:
+    app: tactical-websockets
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tactical-websockets
+  template:
+    metadata:
+      labels:
+        app: tactical-websockets
+    spec:
+      containers:
+        - name: tactical-websockets
+          args: ["tactical-websockets"]
+          image: trmmcontainer.azurecr.io/tactical:latest
+          volumeMounts:
+            - name: storage
+              mountPath: /opt/tactical
+          ports:
+            - containerPort: 8383
+              name: tcp
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: shared

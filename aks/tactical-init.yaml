@@ -45,11 +45,11 @@ spec:
               name: trmmpass
               key: trmmpasskey
       volumeMounts:
-        - name: storage
-          mountPath: /opt/tactical
         - name: trmm-secretstore-inline
           mountPath: /mnt/secrets-store
           readOnly: true
+        - name: storage
+          mountPath: /opt/tactical
   restartPolicy: OnFailure
   volumes:
     - name: storage

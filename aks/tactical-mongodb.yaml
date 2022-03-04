@@ -2,6 +2,9 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: mongodbdata
+  namespace: tacticalrmm
+  labels:
+    app: trmm
 spec:
   storageClassName: static-disk
   accessModes:
@@ -53,15 +56,30 @@ spec:
               name: tcp
           env:
             - name: MONGO_INITDB_ROOT_USERNAME
-              value: "mongouser"
+              valueFrom:
+                secretKeyRef:
+                  name: mongouser
+                  key: mongouserkey
             - name: MONGO_INITDB_ROOT_PASSWORD
-              value: "6Ve1Pz2J3v5F"
+              valueFrom:
+                secretKeyRef:
+                  name: mongopass
+                  key: mongopasskey
             - name: MONGO_INITDB_DATABASE
               value: "meshcentral"
           volumeMounts:
             - name: storage
               mountPath: /data/db
+            - name: trmm-secretstore-inline
+              mountPath: /mnt/secrets-store
+              readOnly: true
       volumes:
         - name: storage
           persistentVolumeClaim:
             claimName: mongodbdata
+        - name: trmm-secretstore-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "trmm-secretstore"

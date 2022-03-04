@@ -88,6 +88,7 @@ resource "azurerm_managed_disk" "disk" {
   create_option = "Empty"
   disk_size_gb = "100"
   zones = ["1"]
+  max_shares = 3
 }
 
 data "azurerm_client_config" "current" {}
