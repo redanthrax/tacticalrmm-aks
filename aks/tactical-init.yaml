@@ -10,6 +10,7 @@ spec:
     - name: tactical-init
       image: trmmcontainer.azurecr.io/tactical
       args: ["tactical-init"]
+      command: 
       env:
         - name: TACTICAL_DIR
           value: /opt/tactical
@@ -24,16 +25,25 @@ spec:
               name: postgrespass
               key: postgrespasskey
         - name: APP_HOST
-          value: "rmm.mycompany.com"
+          valueFrom:
+            secretKeyRef:
+              name: rmmurl
+              key: rmmurlkey
         - name: API_HOST
-          value: "api.mycompany.com"
+          valueFrom:
+            secretKeyRef:
+              name: apiurl
+              key: apiurlkey
         - name: MESH_USER
           valueFrom:
             secretKeyRef:
               name: meshuser
               key: meshuserkey
         - name: MESH_HOST
-          value: "mesh.mycompany.com"
+          valueFrom:
+            secretKeyRef:
+              name: meshurl
+              key: meshurlkey
         - name: TRMM_USER
           valueFrom:
             secretKeyRef:

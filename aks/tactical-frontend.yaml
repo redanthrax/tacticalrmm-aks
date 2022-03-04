@@ -39,4 +39,18 @@ spec:
               name: http
           env:
             - name: API_HOST
-              value: "api.mycompany.com"
+              valueFrom:
+                secretKeyRef:
+                  name: apiurl
+                  key: apiurlkey
+          volumeMounts:
+          - name: trmm-secretstore-inline
+            mountPath: /mnt/secrets-store
+            readOnly: true
+      volumes:
+        - name: trmm-secretstore-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "trmm-secretstore"

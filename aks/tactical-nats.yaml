@@ -46,11 +46,23 @@ spec:
             - name: TACTIAL_DIR
               value: "/opt/tactical"
             - name: API_HOST
-              value: "api.mycompany.com"
+              valueFrom:
+                secretKeyRef:
+                  name: apiurl
+                  key: apiurlkey
           volumeMounts:
             - name: storage
               mountPath: /opt/tactical
+            - name: trmm-secretstore-inline
+              mountPath: /mnt/secrets-store
+              readOnly: true
       volumes:
         - name: storage
           persistentVolumeClaim:
             claimName: shared
+        - name: trmm-secretstore-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "trmm-secretstore"

@@ -70,6 +70,10 @@ resource "azurerm_kubernetes_cluster" "cluster" {
 
   node_resource_group = "${azurerm_resource_group.rg.name}-resources"
 
+  key_vault_secrets_provider {
+    secret_rotation_enabled = false
+  }
+
   tags = var.tags
 }
 

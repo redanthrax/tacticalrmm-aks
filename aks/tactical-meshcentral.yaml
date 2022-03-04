@@ -56,7 +56,10 @@ spec:
               name: tcp
           env:
             - name: MESH_HOST
-              value: "mesh.mycompany.com"
+              valueFrom:
+                secretKeyRef:
+                  name: meshurl
+                  key: meshurlkey
             - name: MESH_USER
               valueFrom:
                 secretKeyRef:
@@ -79,6 +82,8 @@ spec:
                   key: mongopasskey
             - name: MESH_PERSISTENT_CONFIG
               value: "0"
+            - name: NGINX_HOST_IP
+              value: "tactical-nginx"
           volumeMounts:
             - name: meshdata
               mountPath: /home/node/app/meshcentral-data

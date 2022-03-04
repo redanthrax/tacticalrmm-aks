@@ -3,13 +3,13 @@ kind: Service
 metadata:
   annotations:
     service.beta.kubernetes.io/azure-load-balancer-resource-group: trmm
-    service.beta.kubernetes.io/azure-dns-label-name: tacticalrmm
+    service.beta.kubernetes.io/azure-dns-label-name: tacticalrmm-234df
   name: tactical-lb
   namespace: tacticalrmm
   labels:
     app: trmm
 spec:
-  loadBalancerIP: 20.99.251.124
+  loadBalancerIP: 40.64.65.0
   type: LoadBalancer
   externalTrafficPolicy: Local
   selector:

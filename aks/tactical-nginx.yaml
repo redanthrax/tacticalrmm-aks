@@ -43,11 +43,20 @@ spec:
               name: "443-nginx"
           env:
             - name: APP_HOST
-              value: "rmm.mycompany.com"
+              valueFrom:
+                secretKeyRef:
+                  name: rmmurl
+                  key: rmmurlkey
             - name: API_HOST
-              value: "api.mycompany.com"
+              valueFrom:
+                secretKeyRef:
+                  name: apiurl
+                  key: apiurlkey
             - name: MESH_HOST
-              value: "mesh.mycompany.com"
+              valueFrom:
+                secretKeyRef:
+                  name: meshurl
+                  key: meshurlkey
             - name: NGINX_RESOLVER
               value: "kube-dns.kube-system.svc.cluster.local"
             - name: BACKEND_SERVICE
@@ -59,13 +68,28 @@ spec:
             - name: WEBSOCKETS_SERVICE
               value: tactical-websockets.tacticalrmm.svc.cluster.local
             - name: CERT_PUB_KEY
-              value: ""
+              valueFrom:
+                secretKeyRef:
+                  name: trmmcert
+                  key: trmmcertkey
             - name: CERT_PRIV_KEY
-              value: ""
+              valueFrom:
+                secretKeyRef:
+                  name: trmmkey
+                  key: trmmkeykey
           volumeMounts:
             - name: storage
               mountPath: /opt/tactical
+            - name: trmm-secretstore-inline
+              mountPath: /mnt/secrets-store
+              readOnly: true
       volumes:
         - name: storage
           persistentVolumeClaim:
             claimName: shared
+        - name: trmm-secretstore-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "trmm-secretstore"
