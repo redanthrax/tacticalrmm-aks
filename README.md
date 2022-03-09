@@ -23,6 +23,7 @@ az account set --name "Subscription Name"
 You must decide on a short name for your container registry in azure.
 This example uses trmmcontainer but you'll have to use something different.
 After picking a name you will need to replace trmmcontainer in all the yaml files and while using this readme with the one you chose.
+Ex. az acr login --name trmmcontainer must become the one you choose.
 
 ## deploy via terraform
 
@@ -117,15 +118,15 @@ cd aks/
 
 kubectl apply -f namespace.yaml
 
-az disk show --resource-group trmm-resources --name clusterdisk --query id -o tsv
+kubens -> select tacticalrmm
 ```
 
-replace storage.yaml disk id with value
+## setup fileshare shared storage
 
 ```
+az storage account keys list --resource-group trmm-resources --account-name trmmstorage --query "[0].value" -o tsv
+kubectl create secret generic azure-secret --from-literal=azurestorageaccountname=trmmstorage --from-literal=azurestorageaccountkey='<key from previous command>'
 kubectl apply -f storage.yaml
-
-kubectl apply -f sharedvolume.yaml
 ```
 
 ## setup secrets
@@ -134,7 +135,7 @@ kubectl apply -f sharedvolume.yaml
 az aks show -g trmm -n trmm-cluster --query addonProfiles.azureKeyvaultSecretsProvider.identity.clientId -o tsv
 ```
 
-Replace userAssignedIdentityID with value returned
+Replace userAssignedIdentityID with value returned in secrets.yaml
 
 ```
 az account show --query tenantId -o tsv

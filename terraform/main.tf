@@ -84,15 +84,21 @@ resource "azurerm_role_assignment" "assignment" {
   skip_service_principal_aad_check = true
 }
 
-resource "azurerm_managed_disk" "disk" {
-  name = "clusterdisk"
-  location = var.location
+resource "azurerm_storage_account" "storage" {
+  name = "trmmstorage"
   resource_group_name = azurerm_kubernetes_cluster.cluster.node_resource_group
-  storage_account_type = "Premium_LRS"
-  create_option = "Empty"
-  disk_size_gb = "100"
-  zones = ["1"]
-  max_shares = 3
+  location = var.location
+  account_tier = "Premium"
+  account_replication_type = "LRS"
+  account_kind = "FileStorage"
+  large_file_share_enabled = true
+  allow_blob_public_access = true
+  tags = var.tags
+}
+
+resource "azurerm_storage_share" "share" {
+  name = "sharedstorage"
+  storage_account_name = azurerm_storage_account.storage.name
 }
 
 data "azurerm_client_config" "current" {}

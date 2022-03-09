@@ -9,7 +9,7 @@ metadata:
   labels:
     app: trmm
 spec:
-  loadBalancerIP: 40.64.65.0
+  loadBalancerIP: 52.137.90.147
   type: LoadBalancer
   externalTrafficPolicy: Local
   selector:

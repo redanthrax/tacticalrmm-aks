@@ -59,7 +59,7 @@ spec:
       volumes:
         - name: storage
           persistentVolumeClaim:
-            claimName: shared
+            claimName: shared-storage
         - name: trmm-secretstore-inline
           csi:
             driver: secrets-store.csi.k8s.io

@@ -1,34 +1,79 @@
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: static-disk
-  namespace: tacticalrmm
-  labels:
-    app: trmm
-provisioner: disk.csi.azure.com
-volumeBindingMode: Immediate
+  name: shared-storage
+provisioner: file.csi.azure.com
 allowVolumeExpansion: true
-reclaimPolicy: Retain
 parameters:
-  skuname: Premium_LRS
-  cachingMode: None
+  resourceGroup: "trmm-resources"
+  storageAccount: "trmmstorage"
+  server: trmmstorage.file.core.windows.net 
+reclaimPolicy: Retain
+volumeBindingMode: Immediate
+mountOptions:
+  - dir_mode=0777
+  - file_mode=0777
+  - uid=0
+  - gid=0
+  - mfsymlinks
+  - cache=strict  # https://linux.die.net/man/8/mount.cifs
+  - nosharesock  # reduce probability of reconnect race
+  - actimeo=30  # reduce latency for metadata-heavy workload
 
 ---
 
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: storage
+  name: shared-storage
 spec:
+  storageClassName: shared-storage
   capacity:
     storage: 100Gi
-  storageClassName: static-disk
-  volumeMode: Filesystem
-  persistentVolumeReclaimPolicy: Retain
   accessModes:
     - ReadWriteMany
-  azureDisk:
-    kind: Managed
-    diskName: clusterdisk
-    diskURI: /subscriptions/9f422d60-3e3d-42d2-83eb-593d59002ab4/resourceGroups/trmm-resources/providers/Microsoft.Compute/disks/clusterdisk
-    cachingMode: None
+  persistentVolumeReclaimPolicy: Retain
+  csi:
+    driver: file.csi.azure.com
+    readOnly: false
+    volumeHandle: sharedstorage1  # make sure this volumeid is unique in the cluster
+    volumeAttributes:
+      shareName: sharedstorage
+    nodeStageSecretRef:
+      name: azure-secret
+      namespace: tacticalrmm
+  mountOptions:
+    - dir_mode=0777
+    - file_mode=0777
+    - uid=0
+    - gid=0
+    - mfsymlinks
+    - cache=strict
+    - nosharesock
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: shared-storage
+spec:
+  storageClassName: shared-storage
+  volumeName: shared-storage
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+
+---
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: static-disk
+  namespace: tacticalrmm
+provisioner: disk.csi.azure.com
+reclaimPolicy: Retain
+volumeBindingMode: Immediate
+allowVolumeExpansion: true
