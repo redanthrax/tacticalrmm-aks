@@ -25,6 +25,8 @@ This example uses trmmcontainer but you'll have to use something different.
 After picking a name you will need to replace trmmcontainer in all the yaml files and while using this readme with the one you chose.
 Ex. az acr login --name trmmcontainer must become the one you choose.
 
+You must also change the vault name in the tfvars file and change the corresponding commands and yaml files to match.
+
 ## deploy via terraform
 
 ```
@@ -90,7 +92,7 @@ az aks show -g trmm -n trmm-cluster --query addonProfiles.azureKeyvaultSecretsPr
 Use output in next command
 
 ```
-az keyvault set-policy -n trmm-vault --secret-permissions get --spn <identity-client-id>
+az keyvault set-policy -n trmmkeyvault --secret-permissions get --spn <identity-client-id>
 ```
 
 ## setup keyvault secrets
@@ -98,17 +100,17 @@ az keyvault set-policy -n trmm-vault --secret-permissions get --spn <identity-cl
 Customize the values below to fit your domain and customize the users/passwords for security
 
 ```
-az keyvault secret set --vault-name trmm-vault -n RmmUrl --value 'rmm.mycompany.com'
-az keyvault secret set --vault-name trmm-vault -n ApiUrl --value 'api.mycompany.com'
-az keyvault secret set --vault-name trmm-vault -n MeshUrl --value 'mesh.mycompany.com'
-az keyvault secret set --vault-name trmm-vault -n PostgresUser --value 'postgresuser'
-az keyvault secret set --vault-name trmm-vault -n PostgresPass --value 'mypostgrespass1'
-az keyvault secret set --vault-name trmm-vault -n MeshUser --value 'meshuser'
-az keyvault secret set --vault-name trmm-vault -n MeshPass --value 'meshpass1'
-az keyvault secret set --vault-name trmm-vault -n MongoUser --value 'monguser'
-az keyvault secret set --vault-name trmm-vault -n MongoPass --value 'mongopass1'
-az keyvault secret set --vault-name trmm-vault -n TrmmUser --value 'tactical'
-az keyvault secret set --vault-name trmm-vault -n TrmmPass --value 'tacticalpass1'
+az keyvault secret set --vault-name trmmkeyvault -n RmmUrl --value 'rmm.mycompany.com'
+az keyvault secret set --vault-name trmmkeyvault -n ApiUrl --value 'api.mycompany.com'
+az keyvault secret set --vault-name trmmkeyvault -n MeshUrl --value 'mesh.mycompany.com'
+az keyvault secret set --vault-name trmmkeyvault -n PostgresUser --value 'postgresuser'
+az keyvault secret set --vault-name trmmkeyvault -n PostgresPass --value 'mypostgrespass1'
+az keyvault secret set --vault-name trmmkeyvault -n MeshUser --value 'meshuser'
+az keyvault secret set --vault-name trmmkeyvault -n MeshPass --value 'meshpass1'
+az keyvault secret set --vault-name trmmkeyvault -n MongoUser --value 'monguser'
+az keyvault secret set --vault-name trmmkeyvault -n MongoPass --value 'mongopass1'
+az keyvault secret set --vault-name trmmkeyvault -n TrmmUser --value 'tactical'
+az keyvault secret set --vault-name trmmkeyvault -n TrmmPass --value 'tacticalpass1'
 ```
 
 ## setup tactical rmm resources in aks
@@ -166,12 +168,12 @@ Be sure to replace domain with your actual domain
 ```
 sudo base64 -w 0 /etc/letsencrypt/live/domain.com/fullchain.pem
 
-az keyvault secret set --vault-name trmm-vault -n TrmmCert --value "<value from above command>"
+az keyvault secret set --vault-name trmmkeyvault -n TrmmCert --value "<value from above command>"
 ```
 
 ```
 sudo base64 -w 0 /etc/letsencrypt/live/domain.com/privkey.pem
-az keyvault secret set --vault-name trmm-vault -n TrmmKey --value "<value from above command>"
+az keyvault secret set --vault-name trmmkeyvault -n TrmmKey --value "<value from above command>"
 ```
 
 ## deploy and start the containers

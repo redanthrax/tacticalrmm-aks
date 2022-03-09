@@ -36,3 +36,6 @@ variable "loadbalancer_sku" {
 
 variable "networkpolicy" {
 }
+
+variable "vaultname" {
+}

@@ -1,6 +1,6 @@
 resource_group_name		= "trmm"
 location				= "westus2"
-dns_prefix				= "exampletrmm"
+dns_prefix				= "trmm"
 tags					= { terraform = "yes", resource = "AKS" }
 container_registry_name = "trmmcontainer"
 address_space			= ["10.1.0.0/16"]
@@ -11,3 +11,4 @@ machinesize				= "Standard_D2s_v3"
 networkplugin			= "azure"
 loadbalancer_sku		= "Standard"
 networkpolicy			= "azure"
+vaultname               = "trmmkeyvault"

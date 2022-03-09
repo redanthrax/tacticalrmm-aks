@@ -104,7 +104,7 @@ resource "azurerm_storage_share" "share" {
 data "azurerm_client_config" "current" {}
 
 resource "azurerm_key_vault" "vault" {
-  name = "${var.resource_group_name}-vault"
+  name = var.vaultname
   location = var.location
   resource_group_name = azurerm_resource_group.rg.name
   sku_name = "standard"
