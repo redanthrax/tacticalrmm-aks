@@ -38,6 +38,12 @@ resource "azurerm_public_ip" "pip" {
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method = "Static"
   sku = var.publicip_sku
+  lifecycle {
+    ignore_changes = [
+      domain_name_label,
+      tags
+    ]
+  }
 }
 
 resource "azurerm_kubernetes_cluster" "cluster" {
@@ -102,6 +108,46 @@ resource "azurerm_storage_share" "share" {
   quota = 100
 }
 
+resource "azurerm_managed_disk" "postgresdisk" {
+  name = "postgres"
+  location = var.location
+  resource_group_name = "${azurerm_resource_group.rg.name}-resources"
+  storage_account_type = "StandardSSD_ZRS"
+  create_option = "Empty"
+  disk_size_gb = 16
+  tags = var.tags
+}
+
+resource "azurerm_managed_disk" "mongodbdisk" {
+  name = "mongodb"
+  location = var.location
+  resource_group_name = "${azurerm_resource_group.rg.name}-resources"
+  storage_account_type = "StandardSSD_ZRS"
+  create_option = "Empty"
+  disk_size_gb = 16
+  tags = var.tags
+}
+
+resource "azurerm_managed_disk" "meshdisk" {
+  name = "meshdata"
+  location = var.location
+  resource_group_name = "${azurerm_resource_group.rg.name}-resources"
+  storage_account_type = "StandardSSD_ZRS"
+  create_option = "Empty"
+  disk_size_gb = 16
+  tags = var.tags
+}
+
+resource "azurerm_managed_disk" "redis" {
+  name = "redis"
+  location = var.location
+  resource_group_name = "${azurerm_resource_group.rg.name}-resources"
+  storage_account_type = "StandardSSD_ZRS"
+  create_option = "Empty"
+  disk_size_gb = 16
+  tags = var.tags
+}
+
 data "azurerm_client_config" "current" {}
 
 resource "azurerm_key_vault" "vault" {
@@ -128,6 +174,12 @@ resource "azurerm_key_vault" "vault" {
 
     storage_permissions = [
       "Get",
+    ]
+  }
+
+  lifecycle {
+    ignore_changes = [
+      access_policy
     ]
   }
 }

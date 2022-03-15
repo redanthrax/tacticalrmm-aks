@@ -77,3 +77,79 @@ provisioner: disk.csi.azure.com
 reclaimPolicy: Retain
 volumeBindingMode: Immediate
 allowVolumeExpansion: true
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres
+spec:
+  capacity:
+    storage: 16Gi
+  storageClassName: static-disk
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  accessModes:
+    - ReadWriteOnce
+  azureDisk:
+    kind: Managed
+    diskName: postgres
+    diskURI: /subscriptions/522a3c55-d74a-4f1e-a543-815597de6ede/resourceGroups/trmm-resources/providers/Microsoft.Compute/disks/postgres
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mongodb
+spec:
+  capacity:
+    storage: 16Gi
+  storageClassName: static-disk
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  accessModes:
+    - ReadWriteOnce
+  azureDisk:
+    kind: Managed
+    diskName: mongodb
+    diskURI: /subscriptions/522a3c55-d74a-4f1e-a543-815597de6ede/resourceGroups/trmm-resources/providers/Microsoft.Compute/disks/mongodb
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: meshdata
+spec:
+  capacity:
+    storage: 16Gi
+  storageClassName: static-disk
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  accessModes:
+    - ReadWriteOnce
+  azureDisk:
+    kind: Managed
+    diskName: meshdata
+    diskURI: /subscriptions/522a3c55-d74a-4f1e-a543-815597de6ede/resourceGroups/trmm-resources/providers/Microsoft.Compute/disks/meshdata
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: redis
+spec:
+  capacity:
+    storage: 16Gi
+  storageClassName: static-disk
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  accessModes:
+    - ReadWriteOnce
+  azureDisk:
+    kind: Managed
+    diskName: redis
+    diskURI: /subscriptions/522a3c55-d74a-4f1e-a543-815597de6ede/resourceGroups/trmm-resources/providers/Microsoft.Compute/disks/redis

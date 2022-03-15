@@ -6,6 +6,7 @@ metadata:
   labels:
     app: trmm
 spec:
+  volumeName: postgres
   storageClassName: static-disk
   accessModes:
     - ReadWriteOnce
