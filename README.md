@@ -125,6 +125,8 @@ kubens -> select tacticalrmm
 
 ## setup fileshare shared storage
 
+Update disk URIs with their corrosponding disk URIs in storage.yaml postgres, mongodb, meshdata and redis
+
 ```
 az storage account keys list --resource-group trmm-resources --account-name trmmstorage --query "[0].value" -o tsv
 kubectl create secret generic azure-secret --from-literal=azurestorageaccountname=trmmstorage --from-literal=azurestorageaccountkey='<key from previous command>'
@@ -242,3 +244,15 @@ Login to your instance at rmm.mycompany.com with the default user created before
 Create your first client and upload the exe.
 
 Hit me up at the tactical rmm discord for questions.
+
+## Disaster Recovery
+
+Create an Azure Backup Vault
+
+Create a Backup Policy in the vault
+
+Add meshdata, mongodb, postgres, and redis to the backup
+
+Create an Azure Backup Recovery Vault
+
+Select the file share and use the Backup under Operations
