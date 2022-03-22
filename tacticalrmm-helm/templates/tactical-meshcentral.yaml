@@ -51,7 +51,7 @@ spec:
     spec:
       containers:
         - name: tactical-meshcentral
-          image: trmmcontainer.azurecr.io/tactical-meshcentral:latest
+          image: "{{ .Values.containerRegistry }}.azurecr.io/tactical-meshcentral:{{ .Values.image.tag }}"
           ports:
             - containerPort: 443
               name: tcp

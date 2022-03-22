@@ -8,7 +8,7 @@ metadata:
 spec:
   containers:
     - name: tactical-init
-      image: trmmcontainer.azurecr.io/tactical
+      image: "{{ .Values.containerRegistry }}.azurecr.io/tactical:{{ .Values.image.tag }}"
       args: ["tactical-init"]
       command: 
       env:

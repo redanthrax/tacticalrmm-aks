@@ -33,7 +33,7 @@ spec:
     spec:
       containers:
         - name: tactical-frontend
-          image: trmmcontainer.azurecr.io/tactical-frontend:latest
+          image: "{{ .Values.containerRegistry }}.azurecr.io/tactical-frontend:{{ .Values.image.tag }}"
           ports:
             - containerPort: 80
               name: http

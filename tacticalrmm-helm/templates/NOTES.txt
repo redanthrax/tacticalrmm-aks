@@ -1,0 +1,1 @@
+Direct rmm, api, and mesh subdomains to {{ .Values.loadbalancer.ip }} and wait for DNS to resolve.

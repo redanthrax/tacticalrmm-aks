@@ -34,7 +34,7 @@ spec:
     spec:
       containers:
         - name: tactical-nginx
-          image: trmmcontainer.azurecr.io/tactical-nginx:latest
+          image: "{{ .Values.containerRegistry }}.azurecr.io/tactical-nginx:{{ .Values.image.tag }}"
           imagePullPolicy: Always
           ports:
             - containerPort: 80

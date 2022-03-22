@@ -1,0 +1,22 @@
+loadbalancer:
+  dnsLabel: exampledns
+  ip: 192.168.1.1
+
+userAssignedIdentity: 000000-0000-0000-0000-000000
+
+tenantId: 000000-0000-0000-0000-000000
+
+storage:
+  account: examplestorage
+  key: asdfasfasdfasf2r2faswdf423653453453k4jl3k45j3lj===
+  postgres: /subscriptions/000000-0000-0000-0000-000000/resourceGroups/trmm-resources/providers/Microsoft.Compute/disks/postgres
+  mongodb: /subscriptions/000000-0000-0000-0000-000000/resourceGroups/trmm-resources/providers/Microsoft.Compute/disks/mongodb
+  mesh: /subscriptions/000000-0000-0000-0000-000000/resourceGroups/trmm-resources/providers/Microsoft.Compute/disks/meshdata
+  redis: /subscriptions/000000-0000-0000-0000-000000/resourceGroups/trmm-resources/providers/Microsoft.Compute/disks/redis
+
+containerRegistry: exampleregistry
+
+keyvault: examplevault
+
+image:
+  tag: 0.12.0

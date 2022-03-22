@@ -1,2 +1,4 @@
 .terraform*
 terraform.tfstate*
+tacticalrmm-helm/values.yaml
+*.tgz

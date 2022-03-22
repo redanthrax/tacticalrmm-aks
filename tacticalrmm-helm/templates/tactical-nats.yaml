@@ -38,7 +38,7 @@ spec:
     spec:
       containers:
         - name: tactical-nats
-          image: trmmcontainer.azurecr.io/tactical-nats:latest
+          image: "{{ .Values.containerRegistry }}.azurecr.io/tactical-nats:{{ .Values.image.tag }}"
           ports:
             - containerPort: 4222
               name: "4222-nats"

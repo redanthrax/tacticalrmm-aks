@@ -91,7 +91,7 @@ resource "azurerm_role_assignment" "assignment" {
 }
 
 resource "azurerm_storage_account" "storage" {
-  name = "trmmstorage"
+  name = var.storageaccount
   resource_group_name = azurerm_kubernetes_cluster.cluster.node_resource_group
   location = var.location
   account_tier = "Premium"

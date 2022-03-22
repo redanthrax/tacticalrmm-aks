@@ -34,7 +34,7 @@ spec:
       containers:
         - name: tactical-websockets
           args: ["tactical-websockets"]
-          image: trmmcontainer.azurecr.io/tactical:latest
+          image: "{{ .Values.containerRegistry }}.azurecr.io/tactical:{{ .Values.image.tag }}"
           volumeMounts:
             - name: storage
               mountPath: /opt/tactical

@@ -39,3 +39,6 @@ variable "networkpolicy" {
 
 variable "vaultname" {
 }
+
+variable "storageaccount" {
+}
