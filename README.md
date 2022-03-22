@@ -3,11 +3,11 @@
 ## Requirements
 
 Installed Linux Distro (Arch, Debian, Ubuntu, etc) - Not tested in Windows WSL
-Git
-Azure CLI
-Terraform CLI
-Docker
-Helm
+- Git
+- Azure CLI
+- Terraform CLI
+- Docker
+- Helm
 
 ## Clone this repo
 
@@ -19,9 +19,7 @@ git clone https://github.com/redanthrax/tacticalrmm-aks.git
 
 ```
 az login
-
 az account list -o table
-
 az account set --name "Subscription Name"
 ```
 
@@ -57,34 +55,24 @@ The images are tagged in the instructions with the latest version per this writi
 
 ```
 cd ../../
-
 git clone https://github.com/wh1te909/tacticalrmm.git
-
 cd tacticalrmm/docker/
-
 chmod +x image-build.sh
-
 ./image-build.sh
-
 cd ../../tacticalrmm-aks/
-
 chmod +x setup.sh
 ```
 
 setup.sh expects a number of flags
-
--c for the container name
-
--v for the version
-
--k for the key vault name
-
--s for the storage account name
+- -c for the container name
+- -v for the version
+- -k for the key vault name
+- -s for the storage account name
 
 Use the container name, key vault name, and storage account name you specified in tacticalrmm-aks/terraform/terraform.tfvars.
 
 ```
-./setup.sh -c trmmcontainer -v 0.12.0 -k keyvaultname -s storageaccount (refer to the container registry you named in terraform.tfvars)
+./setup.sh -c trmmcontainer -v 0.12.0 -k keyvaultname -s storageaccount
 ```
 
 The setup script will have you setup your URL and additional parameters for usernames and passwords required.
@@ -97,7 +85,6 @@ Replace the variables with the ones provided by the setup.sh script.
 
 ```
 helm package tacticalrmm-helm
-
 helm install tacticalrmm ./tacticalrmm-0.1.0.tgz
 ```
 
