@@ -49,9 +49,14 @@ spec:
       labels:
         app: tactical-mongodb
     spec:
+      securityContext:
+        fsGroup: 1000
       containers:
         - name: tactical-mongodb
           image: mongo:4.4
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
           ports:
             - containerPort: 27017
               name: tcp

@@ -37,10 +37,10 @@ spec:
           image: "{{ .Values.containerRegistry }}.azurecr.io/tactical-nginx:{{ .Values.image.tag }}"
           imagePullPolicy: Always
           ports:
-            - containerPort: 80
-              name: "80-nginx"
-            - containerPort: 443
-              name: "443-nginx"
+            - containerPort: 8080
+              name: "8080-nginx"
+            - containerPort: 4443
+              name: "4433-nginx"
           env:
             - name: APP_HOST
               valueFrom:

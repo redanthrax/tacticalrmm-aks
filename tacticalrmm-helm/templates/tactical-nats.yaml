@@ -36,6 +36,9 @@ spec:
         app: tactical-nats
         lbtype: external
     spec:
+      securityContext:
+          runAsUser: 1000
+          fsGroup: 1000
       containers:
         - name: tactical-nats
           image: "{{ .Values.containerRegistry }}.azurecr.io/tactical-nats:{{ .Values.image.tag }}"

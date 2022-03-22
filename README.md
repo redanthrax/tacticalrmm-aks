@@ -105,28 +105,6 @@ helm install tacticalrmm ./tacticalrmm-0.1.0.tgz
 
 Setup api.mycompany.com, mesh.mycompany.com, and rmm.mycompany.com to point at your loadbalancer ip address.
 
-## Get mesh download
-
-You need to shell into the tactical-backend pod that is running.
-
-Install k9s
-
-When running k9s navigate to the pod that begins with tactical-backend, press the s key to open a shell
-
-Run the following command
-
-```
-python manage.py get_mesh_exe_url
-```
-
-Copy and paste the url into your browser and download the 64 bit windows exe.
-
-Login to your instance at rmm.mycompany.com with the default user created before.
-
-Create your first client and upload the exe.
-
-Hit me up at the tactical rmm discord for questions.
-
 ## Disaster Recovery
 
 Create an Azure Backup Vault

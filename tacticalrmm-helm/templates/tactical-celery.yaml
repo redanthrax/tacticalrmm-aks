@@ -15,6 +15,9 @@ spec:
       labels:
         app: tactical-celery
     spec:
+      securityContext:
+          runAsUser: 1000
+          fsGroup: 1000
       containers:
         - name: tactical-celery
           args: ["tactical-celery"]

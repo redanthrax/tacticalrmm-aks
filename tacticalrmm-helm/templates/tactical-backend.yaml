@@ -9,7 +9,7 @@ spec:
   selector:
     app: tactical-backend
   ports:
-    - port: 80
+    - port: 8080
       name: "backendport"
 
 ---
@@ -31,6 +31,9 @@ spec:
       labels:
         app: tactical-backend
     spec:
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 1000
       containers:
         - name: tactical-backend
           args: ["tactical-backend"]
@@ -39,7 +42,7 @@ spec:
             - name: storage
               mountPath: /opt/tactical
           ports:
-            - containerPort: 80
+            - containerPort: 8080
               name: http
       volumes:
         - name: storage

@@ -31,6 +31,9 @@ spec:
       labels:
         app: tactical-websockets
     spec:
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 1000
       containers:
         - name: tactical-websockets
           args: ["tactical-websockets"]

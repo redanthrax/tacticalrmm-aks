@@ -27,8 +27,10 @@ spec:
   selector:
     app: tactical-meshcentral
   ports:
-    - port: 443
-      name: "meshcentralport"
+    - port: 4443
+      name: "https"
+    - port: 8080
+      name: "http"
 
 ---
 
@@ -58,8 +60,10 @@ spec:
             runAsUser: 1000
             runAsGroup: 1000
           ports:
-            - containerPort: 443
-              name: tcp
+            - containerPort: 4443
+              name: https
+            - containerPort: 8080
+              name: http
           env:
             - name: MESH_HOST
               valueFrom:
@@ -89,7 +93,9 @@ spec:
             - name: MESH_PERSISTENT_CONFIG
               value: "0"
             - name: NGINX_HOST_IP
-              value: "tactical-nginx"
+              value: "tactical-lb"
+            - name: NGINX_HOST_PORT
+              value: "443"
           volumeMounts:
             - name: meshdata
               mountPath: /home/node/app/meshcentral-data

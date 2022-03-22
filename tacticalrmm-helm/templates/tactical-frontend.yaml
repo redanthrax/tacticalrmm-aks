@@ -9,7 +9,7 @@ spec:
   selector:
     app: tactical-frontend
   ports:
-    - port: 80
+    - port: 8080
       name: "frontendport"
 
 ---
@@ -31,11 +31,14 @@ spec:
       labels:
         app: tactical-frontend
     spec:
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 1000
       containers:
         - name: tactical-frontend
           image: "{{ .Values.containerRegistry }}.azurecr.io/tactical-frontend:{{ .Values.image.tag }}"
           ports:
-            - containerPort: 80
+            - containerPort: 8080
               name: http
           env:
             - name: API_HOST

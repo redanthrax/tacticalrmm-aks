@@ -16,10 +16,10 @@ spec:
     lbtype: external
   ports:
     - port: 80
-      targetPort: "80-nginx"
+      targetPort: "8080-nginx"
       name: "nginxhttp"
     - port: 443
-      targetPort: "443-nginx"
+      targetPort: "4433-nginx"
       name: "nginxhttps"
     - port: 4222
       targetPort: "4222-nats"

@@ -49,9 +49,14 @@ spec:
       labels:
         app: tactical-postgres
     spec:
+      securityContext:
+        fsGroup: 1000
       containers:
         - name: tactical-postgres
           image: postgres:13-alpine
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
           resources:
             requests:
               memory: "256Mi"
