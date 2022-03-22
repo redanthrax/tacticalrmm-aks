@@ -12,7 +12,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 10Gi
+      storage: 16Gi
 
 ---
 
@@ -49,9 +49,14 @@ spec:
       labels:
         app: tactical-meshcentral
     spec:
+      securityContext:
+        fsGroup: 1000
       containers:
         - name: tactical-meshcentral
           image: "{{ .Values.containerRegistry }}.azurecr.io/tactical-meshcentral:{{ .Values.image.tag }}"
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
           ports:
             - containerPort: 443
               name: tcp
