@@ -13,8 +13,6 @@ Helm
 
 ```
 git clone https://github.com/redanthrax/tacticalrmm-aks.git
-
-cd tacticalrmm-aks/terraform/
 ```
 
 ## Login to Azure Subscription
@@ -39,8 +37,7 @@ Customize the following:
 ## Deploy Infrastructure via Terraform
 
 ```
-cd terraform/
-
+cd tacticalrmm-aks/terraform/
 terraform plan
 ```
 
@@ -50,11 +47,16 @@ Resolve any errors presented
 terraform apply
 ```
 
-## Additional Setup
+It should show the additions and ask for confirmation.
+This will take a few minutes to apply.
+If you receive errors during the process try running terraform apply again. Sometimes it will try to create the disks before the 'resources' resource group is created.
 
-The images are tagged in the instructions with the latest version per this writing. Check the Tactical RMM repo and tag appropriately.
+## Setup the images and cluster
+
+The images are tagged in the instructions with the latest version per this writing. Check the Tactical RMM repo and tag appropriately via tacticalrmm-helm/values.yaml.
 
 ```
+cd ../../
 
 git clone https://github.com/wh1te909/tacticalrmm.git
 
@@ -64,12 +66,32 @@ chmod +x image-build.sh
 
 ./image-build.sh
 
-cd ../../
+cd ../../tacticalrmm-aks/
 
 chmod +x setup.sh
+```
 
+setup.sh expects a number of flags
+
+-c for the container name
+
+-v for the version
+
+-k for the key vault name
+
+-s for the storage account name
+
+Use the container name, key vault name, and storage account name you specified in tacticalrmm-aks/terraform/terraform.tfvars.
+
+```
 ./setup.sh -c trmmcontainer -v 0.12.0 -k keyvaultname -s storageaccount (refer to the container registry you named in terraform.tfvars)
 ```
+
+The setup script will have you setup your URL and additional parameters for usernames and passwords required.
+
+After the script completes rename tacticalrmm-aks/tacticalrmm-helm/values.example.yaml to values.yaml.
+
+Replace the variables with the ones provided by the setup.sh script.
 
 ## Setup with helm
 
