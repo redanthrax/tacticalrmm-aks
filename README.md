@@ -106,4 +106,22 @@ Select the file share and use the Backup under Operations
 
 ## Updating
 
-TBD
+Navigate to the repo cloned previously and pull the latest changes from the master branch.
+
+```
+az login
+az account list -o table
+az account set --name "Subscription Name"
+cd tacticalrmm/
+git pull
+cd docker/
+./image-build.sh
+cd ../../tacticalrmm-aks/
+./update.sh -c trmmcontainer -v (new version here based on the latest release like 0.12.2)
+```
+
+Update the image tag in the helm values.yaml file and the appVersion in the helm Chart.yaml file to match the latest version.
+```
+helm package tacticalrmm-helm
+helm upgrade tacticalrmm ./tacticalrmm-0.1.0.tgz
+```

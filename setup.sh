@@ -12,7 +12,7 @@ done
 
 if test -z "$container" || test -z "$version" || test -z "$keyvault" || test -z "$storageaccount"
 then
-    echo "setup.sh expect -c for container and -v for image version -k for keyvault -s for storage account: Eg ./tagandpush.sh -c mycontainer -v 0.12.0 -k mykeyvault -s mystorage"
+    echo "setup.sh expect -c for container and -v for image version -k for keyvault -s for storage account: Eg ./setup.sh -c mycontainer -v 0.12.0 -k mykeyvault -s mystorage"
 else
     echo "Container: $container.azurecr.io";
     echo "Version: $version";

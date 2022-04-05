@@ -1,6 +1,6 @@
 loadbalancer:
   dnsLabel: exampledns #can be anything you want but must be unique
-  ip: 192.168.1.1
+  ip: 192.168.1.1 #ip address of the loadbalancer
 
 userAssignedIdentity: 000000-0000-0000-0000-000000
 
@@ -19,4 +19,4 @@ containerRegistry: exampleregistry
 keyvault: examplevault
 
 image:
-  tag: 0.12.0 #This should match the version of TacticalRMM you're deploying
+  tag: 0.12.2 #This should match the version of TacticalRMM you're deploying

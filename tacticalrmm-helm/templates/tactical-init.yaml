@@ -1,73 +1,77 @@
-apiVersion: v1
-kind: Pod
+apiVersion: batch/v1
+kind: Job
 metadata:
   name: tactical-init
   namespace: tacticalrmm
   labels:
     app: trmm
+  annotations:
+    rollme: {{ randAlphaNum 5 | quote }} #added to roll init every upgrade
 spec:
-  containers:
-    - name: tactical-init
-      image: "{{ .Values.containerRegistry }}.azurecr.io/tactical:{{ .Values.image.tag }}"
-      args: ["tactical-init"]
-      command: 
-      env:
-        - name: TACTICAL_DIR
-          value: /opt/tactical
-        - name: POSTGRES_USER
-          valueFrom:
-            secretKeyRef:
-              name: postgresuser
-              key: postgresuserkey
-        - name: POSTGRES_PASS
-          valueFrom:
-            secretKeyRef:
-              name: postgrespass
-              key: postgrespasskey
-        - name: APP_HOST
-          valueFrom:
-            secretKeyRef:
-              name: rmmurl
-              key: rmmurlkey
-        - name: API_HOST
-          valueFrom:
-            secretKeyRef:
-              name: apiurl
-              key: apiurlkey
-        - name: MESH_USER
-          valueFrom:
-            secretKeyRef:
-              name: meshuser
-              key: meshuserkey
-        - name: MESH_HOST
-          valueFrom:
-            secretKeyRef:
-              name: meshurl
-              key: meshurlkey
-        - name: TRMM_USER
-          valueFrom:
-            secretKeyRef:
-              name: trmmuser
-              key: trmmuserkey
-        - name: TRMM_PASS
-          valueFrom:
-            secretKeyRef:
-              name: trmmpass
-              key: trmmpasskey
-      volumeMounts:
-        - name: trmm-secretstore-inline
-          mountPath: /mnt/secrets-store
-          readOnly: true
+  template:
+    spec:
+      containers:
+        - name: tactical-init
+          image: "{{ .Values.containerRegistry }}.azurecr.io/tactical:{{ .Values.image.tag }}"
+          args: ["tactical-init"]
+          command: 
+          env:
+            - name: TACTICAL_DIR
+              value: /opt/tactical
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgresuser
+                  key: postgresuserkey
+            - name: POSTGRES_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: postgrespass
+                  key: postgrespasskey
+            - name: APP_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: rmmurl
+                  key: rmmurlkey
+            - name: API_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: apiurl
+                  key: apiurlkey
+            - name: MESH_USER
+              valueFrom:
+                secretKeyRef:
+                  name: meshuser
+                  key: meshuserkey
+            - name: MESH_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: meshurl
+                  key: meshurlkey
+            - name: TRMM_USER
+              valueFrom:
+                secretKeyRef:
+                  name: trmmuser
+                  key: trmmuserkey
+            - name: TRMM_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: trmmpass
+                  key: trmmpasskey
+          volumeMounts:
+            - name: trmm-secretstore-inline
+              mountPath: /mnt/secrets-store
+              readOnly: true
+            - name: storage
+              mountPath: /opt/tactical
+      restartPolicy: OnFailure
+      volumes:
         - name: storage
-          mountPath: /opt/tactical
-  restartPolicy: OnFailure
-  volumes:
-    - name: storage
-      persistentVolumeClaim:
-        claimName: shared-storage
-    - name: trmm-secretstore-inline
-      csi:
-        driver: secrets-store.csi.k8s.io
-        readOnly: true
-        volumeAttributes:
-          secretProviderClass: "trmm-secretstore"
+          persistentVolumeClaim:
+            claimName: shared-storage
+        - name: trmm-secretstore-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "trmm-secretstore"
