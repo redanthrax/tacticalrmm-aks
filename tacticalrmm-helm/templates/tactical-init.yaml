@@ -8,6 +8,7 @@ metadata:
   annotations:
     rollme: {{ randAlphaNum 5 | quote }} #added to roll init every upgrade
 spec:
+  ttlSecondsAfterFinished: 100
   template:
     spec:
       containers:
