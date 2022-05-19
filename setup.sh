@@ -84,6 +84,8 @@ else
 
     az aks get-credentials --resource-group trmm --name trmm-cluster
 
+    az aks update -g trmm -n trmm-cluster --enable-secret-rotation
+
     identity=$(az aks show -g trmm -n trmm-cluster --query addonProfiles.azureKeyvaultSecretsProvider.identity.clientId -o tsv)
 
     echo "Found and using identity $identity";

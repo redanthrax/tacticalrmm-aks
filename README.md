@@ -125,3 +125,17 @@ Update the image tag in the helm values.yaml file and the appVersion in the helm
 helm package tacticalrmm-helm
 helm upgrade tacticalrmm ./tacticalrmm-0.1.0.tgz
 ```
+
+## Updating Certificates
+Run the following script and follow the prompts.
+
+```
+./renewcerts.sh -k trmmkeyvault
+```
+
+Build the package with helm again and deploy in order to update the cert store.
+
+```
+helm package tacticalrmm-helm
+helm upgrade tacticalrmm ./tacticalrmm-0.1.0.tgz
+```
