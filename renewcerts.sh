@@ -18,7 +18,8 @@ else
     az keyvault secret set --vault-name $keyvault -n TrmmCert --value $fullchain > /dev/null
     privkey=$(sudo base64 -w 0 /etc/letsencrypt/live/$baseurl/privkey.pem)
     az keyvault secret set --vault-name $keyvault -n TrmmKey --value $privkey > /dev/null
-    kubectl apply -f ./tacticalrmm-helm/templates/tactical-init.yaml
+    kubectl delete secret trmmcert --namespace tacticalrmm
+    kubectl delete secret trmmkey --namespace tacticalrmm
     echo "Keyvault certificates updated."
     echo "Run the deployment via helm to update the certs in the volume store."
 fi

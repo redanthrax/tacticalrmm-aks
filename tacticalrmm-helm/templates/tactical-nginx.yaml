@@ -21,6 +21,8 @@ metadata:
   namespace: tacticalrmm
   labels:
     app: tactical-nginx
+  annotations:
+    rollme: {{ randAlphaNum 5 | quote }} #added to roll certs every upgrade
 spec:
   replicas: 1
   selector:
