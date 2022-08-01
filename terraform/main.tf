@@ -1,3 +1,12 @@
+#terraform {
+#    backend "azurerm" {
+#        resource_group_name = "trmm"
+#        storage_account_name = "tfstatexsae"
+#        container_name = "tfstate"
+#        key = "terraform.tfstate"
+#    }
+#}
+
 resource "random_string" "random" {
   length = 4
   special = false
@@ -56,7 +65,7 @@ resource "azurerm_kubernetes_cluster" "cluster" {
     name = "defaultpool"
     vm_size = var.machinesize
     node_count = 2
-    availability_zones = ["1"]
+    zones = ["1"]
     vnet_subnet_id = azurerm_subnet.subnet.id
   }
 
@@ -70,14 +79,10 @@ resource "azurerm_kubernetes_cluster" "cluster" {
     type = "SystemAssigned"
   }
   
-  role_based_access_control {
-    enabled = true
-  }
-
   node_resource_group = "${azurerm_resource_group.rg.name}-resources"
 
   key_vault_secrets_provider {
-    secret_rotation_enabled = false
+    secret_rotation_enabled = true
   }
 
   tags = var.tags
@@ -98,7 +103,6 @@ resource "azurerm_storage_account" "storage" {
   account_replication_type = "LRS"
   account_kind = "FileStorage"
   large_file_share_enabled = true
-  allow_blob_public_access = true
   tags = var.tags
 }
 
@@ -112,9 +116,10 @@ resource "azurerm_managed_disk" "postgresdisk" {
   name = "postgres"
   location = var.location
   resource_group_name = "${azurerm_resource_group.rg.name}-resources"
-  storage_account_type = "StandardSSD_ZRS"
+  storage_account_type = "StandardSSD_LRS"
   create_option = "Empty"
   disk_size_gb = 16
+  zone = "1"
   tags = var.tags
 }
 
@@ -122,9 +127,10 @@ resource "azurerm_managed_disk" "mongodbdisk" {
   name = "mongodb"
   location = var.location
   resource_group_name = "${azurerm_resource_group.rg.name}-resources"
-  storage_account_type = "StandardSSD_ZRS"
+  storage_account_type = "StandardSSD_LRS"
   create_option = "Empty"
   disk_size_gb = 16
+  zone = "1"
   tags = var.tags
 }
 
@@ -132,9 +138,10 @@ resource "azurerm_managed_disk" "meshdisk" {
   name = "meshdata"
   location = var.location
   resource_group_name = "${azurerm_resource_group.rg.name}-resources"
-  storage_account_type = "StandardSSD_ZRS"
+  storage_account_type = "StandardSSD_LRS"
   create_option = "Empty"
   disk_size_gb = 16
+  zone = "1"
   tags = var.tags
 }
 
@@ -142,9 +149,10 @@ resource "azurerm_managed_disk" "redis" {
   name = "redis"
   location = var.location
   resource_group_name = "${azurerm_resource_group.rg.name}-resources"
-  storage_account_type = "StandardSSD_ZRS"
+  storage_account_type = "StandardSSD_LRS"
   create_option = "Empty"
   disk_size_gb = 16
+  zone = "1"
   tags = var.tags
 }
 
@@ -182,4 +190,18 @@ resource "azurerm_key_vault" "vault" {
       access_policy
     ]
   }
+}
+
+resource "azurerm_storage_account" "tfstate" {
+  name                     = "tfstate${random_string.random.result}"
+  resource_group_name      = azurerm_resource_group.rg.name
+  location                 = azurerm_resource_group.rg.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+}
+
+resource "azurerm_storage_container" "tfstate" {
+  name = "tfstate"
+  storage_account_name = azurerm_storage_account.tfstate.name
+  container_access_type = "blob"
 }

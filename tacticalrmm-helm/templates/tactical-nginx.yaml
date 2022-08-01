@@ -69,6 +69,8 @@ spec:
               value: tactical-meshcentral.tacticalrmm.svc.cluster.local
             - name: WEBSOCKETS_SERVICE
               value: tactical-websockets.tacticalrmm.svc.cluster.local
+            - name: NATS_SERVICE
+              value: tactical-nats.tacticalrmm.svc.cluster.local
             - name: CERT_PUB_KEY
               valueFrom:
                 secretKeyRef:

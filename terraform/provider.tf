@@ -1,3 +1,7 @@
+terraform {
+
+}
+
 provider "azurerm" {
   features {}
 }
